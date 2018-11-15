@@ -9,9 +9,11 @@ package connection;
  *
  * @author claudiasaiz
  */
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -77,22 +79,32 @@ public class Hospital {
                 //Read from the client
 
                 inputStream = socket.getInputStream();
-                Patient[] patient = new Patient[2];
+                
+               // Patient patient = new Patient();
                 ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-                int i;
+                objectRead=objectInputStream.readObject();
+                Patient patient= (Patient)objectRead;
+                System.out.println("patient received:"+patient.toString());
+                
+                FileOutputStream fileOut = new FileOutputStream("patients.txt");
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                out.writeObject(patient);
+                out.close();
+                fileOut.close();
+                /*int i;
                 for (i = 0; i < 2; i++) {
                     objectRead = objectInputStream.readObject();
                     patient[i] = (Patient) objectRead;
                     System.out.println(patient[i].toString());
-                }
+                }*/
 
             } catch (IOException ex) {
                 Logger.getLogger(Hospital.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Hospital.class.getName()).log(Level.SEVERE, null, ex);
-            } finally {
+            }finally {
                 releaseResourcesClient(inputStream, socket);
             }
         }
     }
-}
+    }

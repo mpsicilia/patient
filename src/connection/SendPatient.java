@@ -39,51 +39,52 @@ public class SendPatient {
             Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        String[] symptoms=null;
-        String[] signs = null;
+        String[] symptoms=new String[100];
+        String[] signs=new String[100];
         boolean stop = true;
         int counter = 0;
         String stopsymptoms;
         String stopsigns;
+        
 
         System.out.println("connection stablished");
         System.out.println("introduce your name ");
         String name = bf.readLine();
         System.out.println("introduce your age");
-        int age = bf.read();
+        int age = Integer.parseInt(bf.readLine());
         System.out.println("introduce your weight (kg)");
-        float weight = bf.read();
+        float weight = Float.parseFloat(bf.readLine()) ;
         System.out.println("introduce your height (m)");
-        float height = bf.read();
+        float height = Float.parseFloat(bf.readLine()) ;
         //date
         System.out.println("introduce your symptoms... ");
-        System.out.println("when you finish introducing your symptoms type 'x'");
+        System.out.println("when you finish introducing your symptoms type 'stop'");
 
         while (stop) {
 
             stopsymptoms = bf.readLine();
            
             
-            if (stopsymptoms.equals('x')) {
+            if (stopsymptoms.equals("stop")) {
                 stop = false;
                 break;
             } else {
                 symptoms[counter] = stopsymptoms;
                 
                 counter++;
-                System.out.println("ah entrado en el else y suma contador");
+               
             }
 
         }
         stop = true;
         counter = 0;
         System.out.println("introduce your signs... ");
-        System.out.println("when you finish introducing your signs type 'x'");
+        System.out.println("when you finish introducing your signs type 'stop'");
 
         while (stop) {
 
             stopsigns = bf.readLine();
-            if (stopsigns.equals('x')) {
+            if (stopsigns.equals("stop")) {
                 stop = false;
                 break;
             } else {
