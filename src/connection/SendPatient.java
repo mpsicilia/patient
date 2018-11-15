@@ -39,12 +39,12 @@ public class SendPatient {
             Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        String[] symptoms = null;
+        String[] symptoms=null;
         String[] signs = null;
         boolean stop = true;
         int counter = 0;
-        String stopsymptoms = null;
-        String stopsigns = null;
+        String stopsymptoms;
+        String stopsigns;
 
         System.out.println("connection stablished");
         System.out.println("introduce your name ");
@@ -62,17 +62,21 @@ public class SendPatient {
         while (stop) {
 
             stopsymptoms = bf.readLine();
+           
+            
             if (stopsymptoms.equals('x')) {
                 stop = false;
                 break;
             } else {
                 symptoms[counter] = stopsymptoms;
+                
                 counter++;
+                System.out.println("ah entrado en el else y suma contador");
             }
 
         }
-        stop=true;
-        counter=0;
+        stop = true;
+        counter = 0;
         System.out.println("introduce your signs... ");
         System.out.println("when you finish introducing your signs type 'x'");
 
@@ -89,17 +93,16 @@ public class SendPatient {
 
         }
         LocalDateTime date = LocalDateTime.now();
-        Patient patient=new Patient(name, age, weight, height, date, signs, symptoms);
-        
+        Patient patient = new Patient(name, age, weight, height, date, signs, symptoms);
+        System.out.println(patient);
+
 
         /*Patient[] patients = new Patient[2];
         patients[0] = new Patient("María Plaza", 20, (float) 40.8);
         patients[1] = new Patient("Claudia Saiz", 21, (float) 32.5);*/
-
         try {
             objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(patients[0]);
-            objectOutputStream.writeObject(patients[1]);
+            objectOutputStream.writeObject(patient);
             objectOutputStream.flush();
         } catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");
