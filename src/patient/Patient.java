@@ -22,7 +22,7 @@ private static final long serialVersionUID = -6291904286218553733L;
     private final String[] signs;
     private final String[] symptoms;
    // private final File folder;
-    //private final File[] bitalino;
+    public String[] databitalino = new String[2];
     //private final File[] signs_symptoms;
 
     public static long getSerialVersionUID() {
@@ -59,6 +59,10 @@ private static final long serialVersionUID = -6291904286218553733L;
 
     public String[] getSymptoms() {
         return symptoms;
+    }
+    
+    public void setDataBitalino(String[] datab){
+        this.databitalino = datab;
     }
     
     public Patient (String namePatient, String surnameP, int agePatient, float weightPatient, float heightPatient, LocalDateTime monitoringData, String[] sign, String[] symptom)  {

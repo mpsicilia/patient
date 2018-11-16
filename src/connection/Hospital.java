@@ -98,6 +98,8 @@ public class Hospital {
                         e.printStackTrace();
                     }
                 }
+                String emg = objectInputStream.readUTF();
+                String ecg = objectInputStream.readUTF();
 
                 FileOutputStream fileOut = new FileOutputStream(path + "/ss_" + patient.getMonitoring().format(DateTimeFormatter.ISO_DATE));
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
@@ -105,15 +107,14 @@ public class Hospital {
                 out.close();
                 fileOut.close();            
                 //file bitalino
-                FileOutputStream fileOutBit = new FileOutputStream(path + "/bitalino_" + patient.getMonitoring().format(DateTimeFormatter.ISO_DATE));
+                /*FileOutputStream fileOutBit = new FileOutputStream(path + "/bitalino_" + patient.getMonitoring().format(DateTimeFormatter.ISO_DATE));
+                ObjectOutputStream outBit = new ObjectOutputStream(fileOutBit);
+                outBit.writeUTF("\nEMG: " + emg);
+                outBit.writeUTF("\nECG: " + ecg);
                 
-               
-                /*int i;
-                for (i = 0; i < 2; i++) {
-                    objectRead = objectInputStream.readObject();
-                    patient[i] = (Patient) objectRead;
-                    System.out.println(patient[i].toString());
-                }*/
+                outBit.close();
+                fileOutBit.close(); */
+                
 
             } catch (IOException ex) {
                 Logger.getLogger(Hospital.class.getName()).log(Level.SEVERE, null, ex);

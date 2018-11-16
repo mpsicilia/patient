@@ -31,7 +31,7 @@ import patient.Patient;
  */
 public class SendPatient {
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String args[]) throws IOException, Throwable {
         OutputStream outputStream = null;
         ObjectOutputStream objectOutputStream = null;
         Socket socket = null;
@@ -107,10 +107,15 @@ public class SendPatient {
 
         Patient patient = new Patient(name, surname, age, weight, height, date, signs, symptoms);
         System.out.println(patient);
+        String [] bitalinoData = Bitalino("20:16:02:14:75:76");
+        patient.setDataBitalino(bitalinoData);
 
         try {
             objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(patient);
+            //se mandan en orden?
+            objectOutputStream.writeUTF(bitalinoData[0]);
+            objectOutputStream.writeUTF(bitalinoData[1]);
             objectOutputStream.flush();
         } catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");
@@ -121,50 +126,54 @@ public class SendPatient {
         }
     }
  public static Frame[] frame;
-    //"20:16:07:18:17:85"
-    public static void Bitalino(String mac) throws Throwable{
+
+    public static String[] Bitalino(String mac) throws Throwable{
          BITalino bitalino = null;
+         String [] data = new String[2];
         try {
             bitalino = new BITalino();
-            // find devices
-            //Only works on some OS
+            
             Vector<RemoteDevice> devices = bitalino.findDevices();
             System.out.println(devices);
 
-            //You need TO CHANGE THE MAC ADDRESS
             String macAddress = mac;
             int SamplingRate = 1000;
             bitalino.open(macAddress, SamplingRate);
 
             
-            //If you want A1 and A4 you should use {0,2,3}
-            int[] channelsToAcquire = {0, 3};
+            //We want to use A1 and A2
+            int[] channelsToAcquire = {0, 1};
             bitalino.start(channelsToAcquire);
 
-            //read 300 samples
             for (int j = 0; j < 100; j++) {
 
                 //Read a block of 100 samples 
                 frame = bitalino.read(100);
                 String dataEMG = "";
-                String dataEEG = "";
+                String dataECG = "";
 
-                System.out.println("size block: " + frame.length);
+                //System.out.println("size block: " + frame.length);
 
                 //Print the samples
                 for (int i = 0; i < frame.length; i++) {
                     dataEMG = dataEMG.concat(frame[i].analog[0]+",");
-                    dataEEG = dataEEG.concat(frame[i].analog[3]+",");                
+                    dataECG = dataECG.concat(frame[i].analog[1]+",");                
 
                 }
+             
+                data[0] = dataEMG;
+                data[1] = dataECG;
                 
             }
             //stop acquisition
             bitalino.stop();
+            
         } catch (BITalinoException ex) {
             Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return data;
     }
+    
     private static void releaseResources(ObjectOutputStream objectOutputStream, Socket socket) {
         try {
             objectOutputStream.close();
