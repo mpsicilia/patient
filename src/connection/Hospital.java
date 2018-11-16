@@ -16,6 +16,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import patient.Patient;
@@ -79,18 +83,31 @@ public class Hospital {
                 //Read from the client
 
                 inputStream = socket.getInputStream();
-                
-               // Patient patient = new Patient();
+
+                // Patient patient = new Patient();
                 ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
-                objectRead=objectInputStream.readObject();
-                Patient patient= (Patient)objectRead;
-                System.out.println("patient received:"+patient.toString());
-                
-                FileOutputStream fileOut = new FileOutputStream("patients.txt");
+                objectRead = objectInputStream.readObject();
+                Patient patient = (Patient) objectRead;
+                System.out.println("patient received:" + patient.toString());
+                String current = new java.io.File(".").getCanonicalPath();
+                Path path = Paths.get(current, patient.getName() + "_" + patient.getSurname());
+                if (!Files.exists(path)) {
+                    try {
+                        Files.createDirectories(path);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                FileOutputStream fileOut = new FileOutputStream(path + "/ss_" + patient.getMonitoring().format(DateTimeFormatter.ISO_DATE));
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
                 out.writeObject(patient);
                 out.close();
-                fileOut.close();
+                fileOut.close();            
+                //file bitalino
+                FileOutputStream fileOutBit = new FileOutputStream(path + "/bitalino_" + patient.getMonitoring().format(DateTimeFormatter.ISO_DATE));
+                
+               
                 /*int i;
                 for (i = 0; i < 2; i++) {
                     objectRead = objectInputStream.readObject();
@@ -102,9 +119,9 @@ public class Hospital {
                 Logger.getLogger(Hospital.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Hospital.class.getName()).log(Level.SEVERE, null, ex);
-            }finally {
+            } finally {
                 releaseResourcesClient(inputStream, socket);
             }
         }
     }
-    }
+}
