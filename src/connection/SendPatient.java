@@ -5,6 +5,9 @@
  */
 package connection;
 
+import BITalino.BITalino;
+import BITalino.BITalinoException;
+import BITalino.Frame;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.bluetooth.RemoteDevice;
 import patient.Patient;
 
 /**
@@ -118,7 +122,7 @@ public class SendPatient {
     }
  public static Frame[] frame;
     //"20:16:07:18:17:85"
-    public static void Bitalino(String mac){
+    public static void Bitalino(String mac) throws Throwable{
          BITalino bitalino = null;
         try {
             bitalino = new BITalino();
@@ -154,24 +158,11 @@ public class SendPatient {
 
                 }
                 
-                printWriter.println(dataEMG);
-                printWriter.println(dataEEG);
             }
             //stop acquisition
             bitalino.stop();
         } catch (BITalinoException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Throwable ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                //close bluetooth connection
-                if (bitalino != null) {
-                    bitalino.close();
-                }
-            } catch (BITalinoException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     private static void releaseResources(ObjectOutputStream objectOutputStream, Socket socket) {
