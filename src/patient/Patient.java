@@ -19,6 +19,8 @@ private static final long serialVersionUID = -6291904286218553733L;
     private final float weight;
     private final float height;
     private final LocalDateTime monitoring;
+    //simpledata format
+    //
     private final String[] signs;
     private final String[] symptoms;
    // private final File folder;

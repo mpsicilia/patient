@@ -130,12 +130,18 @@ public class SendPatient {
     public static String[] Bitalino(String mac) throws Throwable{
          BITalino bitalino = null;
          String [] data = new String[2];
+         //mac por consola
+         //imorimir fichero al terminar en objeto
         try {
             bitalino = new BITalino();
             
-            Vector<RemoteDevice> devices = bitalino.findDevices();
-            System.out.println(devices);
-
+            //Vector<RemoteDevice> devices = bitalino.findDevices();
+            //System.out.println(devices);
+            //expresion regular para nombre y apellido par no sobreescribir archivos del so
+            //server contesta a paciente
+            //excepcion de ints tal y de server y paciente
+            //nombre incorrecto
+            //preguntar si es paciente nnuveo
             String macAddress = mac;
             int SamplingRate = 1000;
             bitalino.open(macAddress, SamplingRate);
@@ -145,7 +151,7 @@ public class SendPatient {
             int[] channelsToAcquire = {0, 1};
             bitalino.start(channelsToAcquire);
 
-            for (int j = 0; j < 100; j++) {
+            for (int j = 0; j < 100; j++) { //sobra
 
                 //Read a block of 100 samples 
                 frame = bitalino.read(100);

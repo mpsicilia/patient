@@ -101,7 +101,8 @@ public class Hospital {
                 String emg = objectInputStream.readUTF();
                 String ecg = objectInputStream.readUTF();
 
-                FileOutputStream fileOut = new FileOutputStream(path + "/ss_" + patient.getMonitoring().format(DateTimeFormatter.ISO_DATE));
+                FileOutputStream fileOut = new FileOutputStream(path + "/ss_" + patient.getMonitoring().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
+                System.out.println(path + "/ss_" +patient.getMonitoring().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")));
                 ObjectOutputStream out = new ObjectOutputStream(fileOut);
                 out.writeObject(patient);
                 out.close();
