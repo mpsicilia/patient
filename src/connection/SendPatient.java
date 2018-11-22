@@ -37,7 +37,7 @@ import static patient.Patient.RegularExp;
  */
 public class SendPatient {
 
-    public static void main(String args[]) throws IOException, SocketException, Throwable {
+    public static void main(String args[]) throws Exceptions, SocketException, Throwable {
         OutputStream outputStream = null;
         ObjectOutputStream objectOutputStream = null;
         Socket socket = null;
@@ -62,6 +62,7 @@ public class SendPatient {
 
         boolean stop = true;
         boolean correctreggex = true;
+        boolean correctreggexSur = true;
         int counter = 0;
         String stopsymptoms;
         String stopsigns;
@@ -78,35 +79,48 @@ public class SendPatient {
             }
 
         }
-        String name;
-        String surname;
+        String name = "";
+        String surname = "";
 
         do {
-            System.out.println("introduce your name ");
-            name = bf.readLine();
-            correctreggex = RegularExp(name);
-            if (correctreggex == false) {
-                System.out.println("Introduce a valid name");
-                //mandar excepcion
-            } 
-          
+            try {
+                System.out.println("introduce your name ");
+                name = bf.readLine();
+                correctreggex = RegularExp(name);
+                if (correctreggex == false) {
+                    throw new Exceptions(Exceptions.ErrorTypes.WRONG_REGEXPRESSION);
+
+                } else {
+                    correctreggex = true;
+                    break;
+
+                }
+            } catch (Exceptions ex) {
+
+                System.out.println("error: " + ex);
+
+            }
         } while (correctreggex == false);
-        
-        boolean correctreggexSur=true;
-       
-        
-        do {
-            System.out.println("introduce your surname ");
-            surname = bf.readLine();
-            correctreggexSur = RegularExp(surname);
-            if (correctreggexSur == false) {
-                System.out.println("Introduce a valid surname");
 
-            } 
-          
+        do {
+            try {
+                System.out.println("introduce your surname ");
+                surname = bf.readLine();
+                correctreggexSur = RegularExp(surname);
+                if (correctreggexSur == false) {
+                    throw new Exceptions(Exceptions.ErrorTypes.WRONG_REGEXPRESSION);
+
+                } else {
+                    correctreggexSur = true;
+                    break;
+
+                }
+            } catch (Exceptions ex) {
+
+                System.out.println("error: " + ex);
+
+            }
         } while (correctreggexSur == false);
-      
-     
 
         String current = new java.io.File(".").getCanonicalPath();
         Path path = Paths.get(current, name + "_" + surname);
@@ -114,10 +128,11 @@ public class SendPatient {
         if (Files.exists(path)) {
             System.out.println("You are already registered");
             System.out.println("New monitoring...");
-
+            
             System.out.println("introduce your weight (kg)");
-            float weight = Float.parseFloat(bf.readLine());
-
+             float weight = Float.parseFloat(bf.readLine());
+             
+            
             System.out.println("introduce your symptoms... ");
             System.out.println("when you finish introducing your symptoms type 'stop'");
 
@@ -156,15 +171,21 @@ public class SendPatient {
             patient = new Patient(name, surname, weight, date, signs, symptoms);
 
         } else {
+           
             System.out.println("Welcome");
             System.out.println("Start introducing your data...");
-
             System.out.println("introduce your age");
-            int age = Integer.parseInt(bf.readLine());
+            int age = isInteger("age");
             System.out.println("introduce your weight (kg)");
-            float weight = Float.parseFloat(bf.readLine());
+            float weight = isFloat(bf.readLine());
+          
             System.out.println("introduce your height (m)");
-            float height = Float.parseFloat(bf.readLine());
+            float height = isFloat(bf.readLine());
+                   
+           
+            
+           
+
             //date
             System.out.println("introduce your symptoms... ");
             System.out.println("Suggestions: headache, chest pain, fatigue, vision problems, irregular heartbeat\n"
@@ -211,51 +232,37 @@ public class SendPatient {
 
         //System.out.println(patient);
         int[][] bitalinoData = Bitalino("20:16:02:14:75:76");
-        //CAMBIAR MAC AL FINAL PROYECTO
 
         patient.setDataBitalino(bitalinoData);
+        boolean output = true;
 
-        //try {
-        System.out.println("iwdks");
-        objectOutputStream = new ObjectOutputStream(outputStream);
-        if (objectOutputStream == null) {
-            System.out.println("Throw");
-            //throw new Exceptions(Exceptions.ERRORS.NO_SERVER_AVAILABLE);
-        }
-        objectOutputStream.writeObject(patient);
-        objectOutputStream.flush();
-        //throw new Exceptions(Exceptions.ERRORS.NO_SERVER_AVAILABLE);
-        /*} catch (IOException ex) {
-            System.out.println("Unable to write the objects on the server.");
-            System.out.println(ex);
+        try {
+            objectOutputStream = new ObjectOutputStream(outputStream);
+
+            objectOutputStream.writeObject(patient);
+
+            objectOutputStream.flush();
+
+        } catch (SocketException ex) {
+            System.out.println("Unable to write the patient data on the server, it is closed.");
+            System.out.println("Release just the socket..."
+                    + "the server was closed ");
+
+            output = false;
             //System.out.println("");
-            //releaseResources(objectOutputStream, socket);
-            
-          
-            
-            //Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
+            releaseResourcesSocket(socket);
 
-        } *//*finally {
-            //releaseResources(objectOutputStream, socket);
-
-        }*/
-        releaseResources(objectOutputStream, socket);
-
-    }
-
-//public static Frame[] frame;
-    public static int[][] Bitalino(String mac) throws Throwable {
-        int[][] data = new int[10][10];
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                data[i][j] = 0;
-            }
         }
-        return data;
+
+        while (output) {
+            releaseResources(objectOutputStream, socket);
+        }
+        System.out.println("\tEND OF THE PROGRAM");
     }
 
+    public static Frame[] frame;
 
-    /*public static int[][] Bitalino(String mac) throws Throwable {
+    public static int[][] Bitalino(String mac) throws Throwable {
         BITalino bitalino = null;
         int[][] data = new int[2][10000];
         //mac por consola
@@ -268,32 +275,41 @@ public class SendPatient {
 
             String macAddress = mac;
             int SamplingRate = 1000;
-            try {
-                bitalino.open(macAddress, SamplingRate);
+            boolean connect = true;
+            while (connect) {
+                try {
+                    System.out.println("Trying to connect to the Bitalino...");
 
-            
+                    bitalino.open(macAddress, SamplingRate);
+                    connect = false;
 
-} catch (BITalinoException ex) {
+                } catch (Exception ex) {
 
-                Logger.getLogger(SendPatient.class
-.getName()).log(Level.SEVERE, null, ex);
+                    //Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Trying to connect to the Bitalino...");
+                }
             }
+            connect = true;
 
             //We want to use A1 and A2
             int[] channelsToAcquire = {0, 1};
-            bitalino.start(channelsToAcquire);
+            while (connect) {
+                try {
+
+                    bitalino.start(channelsToAcquire);
+                    connect = false;
+
+                } catch (BITalinoException ex) {
+
+                    //Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Trying to start the Bitalino...");
+                }
+            }
 
             //Read 10000 samples 
             frame = bitalino.read(10000);
-            //int[] dataEMG = new int[10000];
-            //int[] dataECG = new int[10000];
 
             //Print the samples
-            /*for (int i = 0; i < frame.length; i++) {
-                dataEMG[i] = frame[i].analog[0];
-                dataECG[i] = frame[i].analog[1];
-
-            }
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 10000; j++) {
                     data[i][j] = frame[j].analog[i];
@@ -306,14 +322,12 @@ public class SendPatient {
             //stop acquisition
             bitalino.stop();
 
-        
-
-} catch (BITalinoException ex) {
-            Logger.getLogger(SendPatient.class
-.getName()).log(Level.SEVERE, null, ex);
+        } catch (BITalinoException ex) {
+            Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
         }
         return data;
-    }*/
+    }
+
     private static void releaseResources(ObjectOutputStream objectOutputStream, Socket socket) {
         try {
             objectOutputStream.close();
@@ -330,5 +344,45 @@ public class SendPatient {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    private static void releaseResourcesSocket(Socket socket) {
+
+        try {
+            socket.close();
+
+        } catch (IOException ex) {
+            Logger.getLogger(SendPatient.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private static int isInteger(String name){
+    
+        boolean check = true;
+            while (check) {
+                try {
+                    System.out.println("introduce your: "+ name);
+                    int age = Integer.parseInt(bf.readLine());
+                    check = false;
+                } catch (Exception ex) {
+                    System.out.println("invalid: " +name+ ", enter integer");
+                }
+            }
+            return age;
+    }
+       private static int isFloat(String name){
+    
+        boolean check = true;
+            while (check) {
+                try {
+                    System.out.println("introduce your age");
+                    int age = Integer.parseInt(bf.readLine());
+                    check = false;
+                } catch (Exception ex) {
+                    System.out.println("invalid age, enter integer");
+                }
+            }
+            return age;
+    }
+    
 
 }
