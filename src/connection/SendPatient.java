@@ -8,6 +8,8 @@ package connection;
 import BITalino.BITalino;
 import BITalino.BITalinoException;
 import BITalino.Frame;
+import Exceptions.Exceptions;
+import Exceptions.Exceptions.ERRORS;
 import com.sun.javafx.binding.Logging;
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,7 +36,7 @@ import java.net.SocketException;
  */
 public class SendPatient {
 
-    public static void main(String args[]) throws IOException, Throwable {
+    public static void main(String args[]) throws IOException, SocketException, Throwable {
         OutputStream outputStream = null;
         ObjectOutputStream objectOutputStream = null;
         Socket socket = null;
@@ -176,29 +178,36 @@ public class SendPatient {
 
         }
 
-        System.out.println(patient);
+        //System.out.println(patient);
         int[][] bitalinoData = Bitalino("20:16:02:14:75:76");
         //CAMBIAR MAC AL FINAL PROYECTO
 
         patient.setDataBitalino(bitalinoData);
 
-        try {
-            objectOutputStream = new ObjectOutputStream(outputStream);
-           
+        //try {
+            System.out.println("iwdks");
+            objectOutputStream = new ObjectOutputStream(outputStream);   
+            if(objectOutputStream==null){
+                System.out.println("Throw");
+                throw new Exceptions(Exceptions.ERRORS.NO_SERVER_AVAILABLE);
+            }
             objectOutputStream.writeObject(patient);
-           
-
             objectOutputStream.flush();
-
-        } catch (IOException ex) {
+ //throw new Exceptions(Exceptions.ERRORS.NO_SERVER_AVAILABLE);
+        /*} catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");
-           // throw new Exceptions()
-            Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
+            //System.out.println("");
+            //releaseResources(objectOutputStream, socket);
+            
+          
+            
+            //Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
 
-        } finally {
-            releaseResources(objectOutputStream, socket);
+        } *//*finally {
+            //releaseResources(objectOutputStream, socket);
 
-        }
+        }*/
         releaseResources(objectOutputStream, socket);
 
     }
