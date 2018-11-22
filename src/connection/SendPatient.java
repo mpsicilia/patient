@@ -8,6 +8,7 @@ package connection;
 import BITalino.BITalino;
 import BITalino.BITalinoException;
 import BITalino.Frame;
+import com.sun.javafx.binding.Logging;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -25,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.bluetooth.RemoteDevice;
 import patient.Patient;
+import java.net.SocketException;
 
 /**
  *
@@ -177,40 +179,41 @@ public class SendPatient {
         System.out.println(patient);
         int[][] bitalinoData = Bitalino("20:16:02:14:75:76");
         //CAMBIAR MAC AL FINAL PROYECTO
-       
+
         patient.setDataBitalino(bitalinoData);
 
         try {
             objectOutputStream = new ObjectOutputStream(outputStream);
+           
             objectOutputStream.writeObject(patient);
+           
 
             objectOutputStream.flush();
-          
-          
+
         } catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");
+           // throw new Exceptions()
             Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
-          
-        } 
-        finally {
+
+        } finally {
             releaseResources(objectOutputStream, socket);
 
         }
         releaseResources(objectOutputStream, socket);
-    
-}
+
+    }
 
 //public static Frame[] frame;
     public static int[][] Bitalino(String mac) throws Throwable {
-        int[][] data = new int [10][10] ;
+        int[][] data = new int[10][10];
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                data[i][j]=0;
+                data[i][j] = 0;
             }
         }
         return data;
     }
-    
+
 
     /*public static int[][] Bitalino(String mac) throws Throwable {
         BITalino bitalino = null;
@@ -271,23 +274,20 @@ public class SendPatient {
         }
         return data;
     }*/
-
     private static void releaseResources(ObjectOutputStream objectOutputStream, Socket socket) {
         try {
             objectOutputStream.close();
-        
 
-} catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(SendPatient.class
-.getName()).log(Level.SEVERE, null, ex);
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         try {
             socket.close();
-        
 
-} catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(SendPatient.class
-.getName()).log(Level.SEVERE, null, ex);
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
