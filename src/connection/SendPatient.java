@@ -9,7 +9,7 @@ import BITalino.BITalino;
 import BITalino.BITalinoException;
 import BITalino.Frame;
 import Exceptions.Exceptions;
-import Exceptions.Exceptions.ERRORS;
+
 import com.sun.javafx.binding.Logging;
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import javax.bluetooth.RemoteDevice;
 import patient.Patient;
 import java.net.SocketException;
+import static patient.Patient.RegularExp;
 
 /**
  *
@@ -60,6 +61,7 @@ public class SendPatient {
         boolean stopfinal = false;
 
         boolean stop = true;
+        boolean correctreggex = true;
         int counter = 0;
         String stopsymptoms;
         String stopsigns;
@@ -76,10 +78,35 @@ public class SendPatient {
             }
 
         }
-        System.out.println("introduce your name ");
-        String name = bf.readLine();
-        System.out.println("introduce your surname ");
-        String surname = bf.readLine();
+        String name;
+        String surname;
+
+        do {
+            System.out.println("introduce your name ");
+            name = bf.readLine();
+            correctreggex = RegularExp(name);
+            if (correctreggex == false) {
+                System.out.println("Introduce a valid name");
+                //mandar excepcion
+            } 
+          
+        } while (correctreggex == false);
+        
+        boolean correctreggexSur=true;
+       
+        
+        do {
+            System.out.println("introduce your surname ");
+            surname = bf.readLine();
+            correctreggexSur = RegularExp(surname);
+            if (correctreggexSur == false) {
+                System.out.println("Introduce a valid surname");
+
+            } 
+          
+        } while (correctreggexSur == false);
+      
+     
 
         String current = new java.io.File(".").getCanonicalPath();
         Path path = Paths.get(current, name + "_" + surname);
@@ -140,6 +167,8 @@ public class SendPatient {
             float height = Float.parseFloat(bf.readLine());
             //date
             System.out.println("introduce your symptoms... ");
+            System.out.println("Suggestions: headache, chest pain, fatigue, vision problems, irregular heartbeat\n"
+                    + "difficulty breathing ... ");
             System.out.println("when you finish introducing your symptoms type 'stop'");
 
             while (stop) {
@@ -160,6 +189,8 @@ public class SendPatient {
             stop = true;
             counter = 0;
             System.out.println("introduce your signs... ");
+            System.out.println("Suggestions: headache, chest pain, fatigue, vision problems, irregular heartbeat\n"
+                    + "difficulty breathing ... ");
             System.out.println("when you finish introducing your signs type 'stop'");
 
             while (stop) {
@@ -185,15 +216,15 @@ public class SendPatient {
         patient.setDataBitalino(bitalinoData);
 
         //try {
-            System.out.println("iwdks");
-            objectOutputStream = new ObjectOutputStream(outputStream);   
-            if(objectOutputStream==null){
-                System.out.println("Throw");
-                throw new Exceptions(Exceptions.ERRORS.NO_SERVER_AVAILABLE);
-            }
-            objectOutputStream.writeObject(patient);
-            objectOutputStream.flush();
- //throw new Exceptions(Exceptions.ERRORS.NO_SERVER_AVAILABLE);
+        System.out.println("iwdks");
+        objectOutputStream = new ObjectOutputStream(outputStream);
+        if (objectOutputStream == null) {
+            System.out.println("Throw");
+            //throw new Exceptions(Exceptions.ERRORS.NO_SERVER_AVAILABLE);
+        }
+        objectOutputStream.writeObject(patient);
+        objectOutputStream.flush();
+        //throw new Exceptions(Exceptions.ERRORS.NO_SERVER_AVAILABLE);
         /*} catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");
             System.out.println(ex);

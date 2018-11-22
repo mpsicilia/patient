@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -94,5 +96,13 @@ public class Patient implements Serializable {
     @Override
     public String toString() {
         return ("Name: " + name + "\nAge: " + age + "\nWeight: " + weight + "\nHeight: " + height + "\nMonitoring: " + monitoring + "\nSings: " + Arrays.toString(signs) + "\nSymptoms: " + Arrays.toString(symptoms));
+    }
+
+    public static boolean RegularExp(String name) {
+        String reggex = "^[a-zA-Z ]*$";
+        Pattern pat = Pattern.compile(reggex);
+        Matcher match = pat.matcher(name);
+        Boolean itCoincides = match.find();
+        return itCoincides;
     }
 }
