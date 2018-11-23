@@ -84,7 +84,7 @@ public class SendPatient {
 
         do {
             try {
-                System.out.println("introduce your name ");
+                System.out.println("Introduce your name ");
                 name = bf.readLine();
                 correctreggex = RegularExp(name);
                 if (correctreggex == false) {
@@ -97,14 +97,14 @@ public class SendPatient {
                 }
             } catch (Exceptions ex) {
 
-                System.out.println("error: " + ex);
+                System.out.println("Error: " + ex);
 
             }
         } while (correctreggex == false);
 
         do {
             try {
-                System.out.println("introduce your surname ");
+                System.out.println("Introduce your surname ");
                 surname = bf.readLine();
                 correctreggexSur = RegularExp(surname);
                 if (correctreggexSur == false) {
@@ -117,7 +117,7 @@ public class SendPatient {
                 }
             } catch (Exceptions ex) {
 
-                System.out.println("error: " + ex);
+                System.out.println("Error: " + ex);
 
             }
         } while (correctreggexSur == false);
@@ -128,13 +128,12 @@ public class SendPatient {
         if (Files.exists(path)) {
             System.out.println("You are already registered");
             System.out.println("New monitoring...");
-            
-            System.out.println("introduce your weight (kg)");
-             float weight = Float.parseFloat(bf.readLine());
-             
-            
-            System.out.println("introduce your symptoms... ");
-            System.out.println("when you finish introducing your symptoms type 'stop'");
+
+            //System.out.println("Introduce your weight (kg)");
+            float weight = isFloat("weight");
+
+            System.out.println("Introduce your symptoms... ");
+            System.out.println("When you finish introducing your symptoms type 'stop'");
 
             while (stop) {
 
@@ -153,8 +152,8 @@ public class SendPatient {
             }
             stop = true;
             counter = 0;
-            System.out.println("introduce your signs... ");
-            System.out.println("when you finish introducing your signs type 'stop'");
+            System.out.println("Introduce your signs... ");
+            System.out.println("When you finish introducing your signs type 'stop'");
 
             while (stop) {
 
@@ -171,26 +170,24 @@ public class SendPatient {
             patient = new Patient(name, surname, weight, date, signs, symptoms);
 
         } else {
-           
+
             System.out.println("Welcome");
             System.out.println("Start introducing your data...");
-            System.out.println("introduce your age");
+
+            //System.out.println("Introduce your age");
             int age = isInteger("age");
-            System.out.println("introduce your weight (kg)");
-            float weight = isFloat(bf.readLine());
-          
-            System.out.println("introduce your height (m)");
-            float height = isFloat(bf.readLine());
-                   
-           
-            
-           
+
+            //System.out.println("Introduce your weight (kg)");
+            float weight = isFloat("weight");
+
+            //System.out.println("Introduce your height (m)");
+            float height = isFloat("height");
 
             //date
-            System.out.println("introduce your symptoms... ");
+            System.out.println("Introduce your symptoms... ");
             System.out.println("Suggestions: headache, chest pain, fatigue, vision problems, irregular heartbeat\n"
                     + "difficulty breathing ... ");
-            System.out.println("when you finish introducing your symptoms type 'stop'");
+            System.out.println("When you finish introducing your symptoms type 'stop'");
 
             while (stop) {
 
@@ -209,7 +206,7 @@ public class SendPatient {
             }
             stop = true;
             counter = 0;
-            System.out.println("introduce your signs... ");
+            System.out.println("Introduce your signs... ");
             System.out.println("Suggestions: headache, chest pain, fatigue, vision problems, irregular heartbeat\n"
                     + "difficulty breathing ... ");
             System.out.println("when you finish introducing your signs type 'stop'");
@@ -355,34 +352,41 @@ public class SendPatient {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private static int isInteger(String name){
-    
+
+    private static int isInteger(String name) {
+
         boolean check = true;
-            while (check) {
-                try {
-                    System.out.println("introduce your: "+ name);
-                    int age = Integer.parseInt(bf.readLine());
-                    check = false;
-                } catch (Exception ex) {
-                    System.out.println("invalid: " +name+ ", enter integer");
-                }
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        int age = 0;
+
+        while (check) {
+            try {
+                System.out.println("Introduce your " + name);
+                age = Integer.parseInt(bf.readLine());
+                check = false;
+            } catch (Exception ex) {
+                System.out.println("Invalid " + name + ", enter an integer");
             }
-            return age;
+        }
+        return age;
     }
-       private static int isFloat(String name){
-    
+
+    private static float isFloat(String name) {
+
         boolean check = true;
-            while (check) {
-                try {
-                    System.out.println("introduce your age");
-                    int age = Integer.parseInt(bf.readLine());
-                    check = false;
-                } catch (Exception ex) {
-                    System.out.println("invalid age, enter integer");
-                }
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        float data = 0;
+
+        while (check) {
+            try {
+                System.out.println("Introduce your " + name);
+                data = Float.parseFloat(bf.readLine());
+                check = false;
+            } catch (Exception ex) {
+                System.out.println("Invalid " + name + ", enter a float");
             }
-            return age;
+        }
+        return data;
     }
-    
 
 }
