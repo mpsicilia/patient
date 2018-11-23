@@ -189,6 +189,7 @@ public class SendPatient {
                     connect = false;
 
                 } catch (Throwable ex) {
+                    System.out.println(ex);
                     System.out.println("BITalino unconnected.");
                 }
             }
