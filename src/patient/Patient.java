@@ -21,13 +21,9 @@ public class Patient implements Serializable {
     private float weight;
     private float height;
     private LocalDateTime monitoring;
-    //simpledata format
-    //
     private final String[] signs;
     private final String[] symptoms;
-    // private final File folder;
     public int[][] databitalino = new int[2][10000];
-    //private final File[] signs_symptoms;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -95,7 +91,7 @@ public class Patient implements Serializable {
 
     @Override
     public String toString() {
-        return ("Name: " + name + "\nAge: " + age + "\nWeight: " + weight + "\nHeight: " + height + "\nMonitoring: " + monitoring + "\nSings: " + Arrays.toString(signs) + "\nSymptoms: " + Arrays.toString(symptoms));
+        return (name + " " + surname + "\nAge: " + age + "\nWeight: " + weight + "\nHeight: " + height + "\nMonitoring: " + monitoring + "\nSings: " + Arrays.toString(signs) + "\nSymptoms: " + Arrays.toString(symptoms));
     }
 
     public static boolean RegularExp(String name) {
