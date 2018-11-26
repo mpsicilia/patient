@@ -31,18 +31,20 @@ import static patient.Patient.RegularExp;
  * @author plaza
  */
 public class SendPatient {
-   
+
     public static void main(String args[]) throws Exceptions, SocketException, Throwable {
         //Initialization of the resources
         OutputStream outputStream = null;
         ObjectOutputStream objectOutputStream = null;
         Socket socket = null;
-       BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         BufferedReader bufferedreader;
 
-        try {
 
-            socket = new Socket("localhost", 9000);
+        try {
+            System.out.println("Introduce the IP of the hospital: ");
+            String ip = bf.readLine();
+            socket = new Socket(ip, 9001);
             outputStream = socket.getOutputStream();
 
         } catch (IOException ex) {
@@ -51,7 +53,6 @@ public class SendPatient {
             Logger.getLogger(SendPatient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-  
         String line;
         bufferedreader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -62,85 +63,187 @@ public class SendPatient {
                 break;
             }
         }
-        
-                
-        //Acquistion of patient's data
-        Patient patient;
-        //Time of the current monitoring
-        LocalDateTime date = LocalDateTime.now();
-        //Name and surname of the patient
-        String name = isRegularExpression("name");
-        String surname = isRegularExpression("surname");
-
-        //Cheking if the patient already exists
-        String current = new java.io.File(".").getCanonicalPath();
-        Path path = Paths.get(current, name + "_" + surname);
-
 
         boolean stop = true;
         String stopsymptoms;
         String stopsigns;
-        String[] symptoms = new String[100];
-        String[] signs = new String[100];
+        String signs_symptoms = "";
+        boolean sevheadache = false;
+        boolean fatigue = false;
+        boolean chestpain = false;
+        boolean difficultybreath = false;
+        boolean irregheartbeat = false;
         int counter = 0;
+        //Time of the current monitoring
+        LocalDateTime date = LocalDateTime.now();
+        //Acquistion of patient's data
+        Patient patient_empty = new Patient();
+        Patient patient;
+        System.out.println("Introduce your username:");
+        String username = bf.readLine();
+        //Cheking if the patient already exists
+        String current = new java.io.File(".").getCanonicalPath();
+        Path path = Paths.get(current, username);
         
-        //If the patient exists, we ask for his weight, signs and symptoms  
+
         if (Files.exists(path)) {
+            //If the patient exists, we ask for his weight, signs and symptoms  
             System.out.println("You are already registered");
-            System.out.println("New monitoring...");
-
-            float weight = isFloat("weight");
-
-            System.out.println("Introduce your symptoms... ");
-            System.out.println("Suggestions: headache, chest pain, fatigue, vision problems, irregular heartbeat\n"
-                    + "difficulty breathing ... ");
-            symptoms = getSignsOrSymptoms("symptoms");
-
+            patient_empty.setPasswordPat(username);
+  
             
-            System.out.println("Introduce your signs... ");
-            signs = getSignsOrSymptoms("signs");
+            String password = "";
+            do{ 
+                System.out.println("Introduce your password");
+                password = bf.readLine();
+            }while(!password.contains(patient_empty.getPasswordPat()));
+              System.out.println("Correct password");
+           
+            System.out.println("New monitoring...");
+            
+            float weight = isFloat("weight(kg)");
+
+            String parameter;
+            do {
+                System.out.println("Do you have severe headache? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                sevheadache = true;
+            }
+
+            do {
+                System.out.println("Do you have fatigue? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                fatigue = true;
+            }
+
+            do {
+                System.out.println("Do you have chest pain? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                chestpain = true;
+            }
+
+            do {
+                System.out.println("Do you have difficulty breathing? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                difficultybreath = true;
+            }
+
+            do {
+                System.out.println("Do you have irregular heartbeat? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                irregheartbeat = true;
+            }
+
+
+            System.out.println("Introduce additional information... ");
+            signs_symptoms = bf.readLine();
+
 
             //Store the data in the patient object
-            patient = new Patient(name, surname, weight, date, signs, symptoms);
+            patient = new Patient(username, weight, date, sevheadache, fatigue, chestpain, difficultybreath, irregheartbeat, signs_symptoms);
+            patient.setPasswordPat(patient_empty.getPasswordPat());
 
         } else {
+            patient_empty.setPasswordPat(username);
+            
             //The patient is new, so we ask for all the data
             System.out.println("Welcome");
+            System.out.println("We have created a password for you: " + patient_empty.getPasswordPat());
             System.out.println("Start introducing your data...");
+
+            //Name and surname of the patient
+            String name = isRegularExpression("name");
+            String surname = isRegularExpression("surname");
 
             //Age of the patient
             int age = isInteger("age");
 
             //Weight of the patient
-            float weight = isFloat("weight");
+            float weight = isFloat("weight(kg)");
 
             //Height of the patient
-            float height = isFloat("height");
-
-            //Symptoms of hypertension
-            System.out.println("Introduce your symptoms... ");
-            System.out.println("Suggestions: headache, chest pain, fatigue, vision problems, irregular heartbeat\n"
-                    + "difficulty breathing ... ");
-            symptoms = getSignsOrSymptoms("symptoms");
-
-            //Signs of hypertension
-            System.out.println("Introduce your signs... ");
-            signs = getSignsOrSymptoms("signs");
+            float height = isFloat("height(m)");
             
-            //Store the data in the `patient object
-            patient = new Patient(name, surname, age, weight, height, date, signs, symptoms);
+            String parameter;
+            do {
+                System.out.println("Do you have severe headache? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                sevheadache = true;
+            }
+
+            do {
+                System.out.println("Do you have fatigue? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                fatigue = true;
+            }
+
+            do {
+                System.out.println("Do you have chest pain? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                chestpain = true;
+            }
+
+            do {
+                System.out.println("Do you have difficulty breathing? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                difficultybreath = true;
+            }
+
+            do {
+                System.out.println("Do you have irregular heartbeat? Introduce 'yes' or 'no'.");
+                parameter = bf.readLine();
+
+            } while ((!parameter.contains("yes")) && (!parameter.contains("no")));
+            if (parameter.contains("yes")) {
+                irregheartbeat = true;
+            }
+
+
+            System.out.println("Introduce additional information... ");
+            signs_symptoms = bf.readLine();
+
+
+            //Store the data in the patient object
+            
+            patient = new Patient(username, name, surname, age, weight, height, date, sevheadache, fatigue, chestpain, difficultybreath, irregheartbeat, signs_symptoms);
+            patient.setPasswordPat(patient_empty.getPasswordPat());
 
         }
-        
+
         //Getting the ECG and EMG from the bitalino    
-        /* System.out.println("It's time to record your EMG and ECG...");
+        System.out.println("It's time to record your EMG and ECG...");
         System.out.println("Introduce the MAC of your Bitalino");
         String BitalinoMAC = bf.readLine();
-        int[][] bitalinoData = Bitalino(BitalinoMAC);*/
-        int[][] bitalinoData = Bitalino("20:16:02:14:75:76");
+        int[][] bitalinoData = Bitalino(BitalinoMAC);
+        //int[][] bitalinoData = Bitalino("20:16:02:14:75:76");
         //Store the EMG and ECG in the Patient
         patient.setDataBitalino(bitalinoData);
-        
+
         //This boolean is used to release all the used resources if no error occurs
         boolean output = true;
 
@@ -175,7 +278,7 @@ public class SendPatient {
     public static int[][] Bitalino(String mac) throws Throwable {
         BITalino bitalino = null;
         int[][] data = new int[2][10000];
-        
+
         try {
             bitalino = new BITalino();
 
@@ -199,7 +302,6 @@ public class SendPatient {
             int[] channelsToAcquire = {0, 1};
             bitalino.start(channelsToAcquire);
 
-
             //Read 10000 samples 
             frame = bitalino.read(10000);
 
@@ -209,7 +311,7 @@ public class SendPatient {
                     data[i][j] = frame[j].analog[i];
                 }
             }
-            
+
             bitalino.stop();
 
         } catch (BITalinoException ex) {
@@ -262,7 +364,7 @@ public class SendPatient {
         }
         return age;
     }
-    
+
     //Function to check that the WEIGHT and HEIGHT introduced by the patient are floats
     private static float isFloat(String name) {
 
@@ -292,42 +394,19 @@ public class SendPatient {
                 System.out.println("Introduce your " + name);
                 string = bf.readLine();
                 correctreggex = RegularExp(string);
-                
+
                 if (correctreggex == false) {
                     throw new Exceptions(Exceptions.ErrorTypes.WRONG_REGEXPRESSION);
                 } else {
                     correctreggex = true;
                     break;
                 }
-                
+
             } catch (Exceptions ex) {
                 System.out.println("Error: " + ex);
             }
         } while (correctreggex == false);
-        
+
         return string;
     }
-    
-    private static String [] getSignsOrSymptoms(String s) throws IOException{
-        String [] strings = new String[100];
-        boolean stop = true;
-        String nomore = "";
-        int counter = 0;
-        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        
-        System.out.println("When you finish introducing your " + s + " type 'stop'");
-
-            while (stop) {
-                nomore = bf.readLine();
-
-                if (nomore.equals("stop")) {
-                    stop = false;
-                    break;
-                } else {
-                    strings[counter] = nomore;
-                    counter++;
-                }
-            }
-        return strings;
-    }
- }
+}

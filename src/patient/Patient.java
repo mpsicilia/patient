@@ -21,14 +21,14 @@ public class Patient implements Serializable {
     private float weight;
     private float height;
     private LocalDateTime monitoring;
-    private final String[] signs_symptoms;
+    private String signs_symptoms;
     public int[][] databitalino = new int[2][10000];
     private String username;
     private String passwordPat;
     private boolean sevheadache;
     private boolean fatigue;
     private boolean chestpain;
-    private boolean diffdifficultybreath;
+    private boolean difficultybreath;
     private boolean irregheartbeat;
 
     public void setName(String name) {
@@ -71,15 +71,15 @@ public class Patient implements Serializable {
         this.chestpain = chestpain;
     }
 
-    public void setBreath(boolean diffdifficultybreath) {
-        this.diffdifficultybreath = diffdifficultybreath;
+    public void setBreath(boolean difficultybreath) {
+        this.difficultybreath = difficultybreath;
     }
 
     public void setTachychardia(boolean irregheartbeat) {
         this.irregheartbeat = irregheartbeat;
     }
 
-    public String[] getSigns_symptoms() {
+    public String getSigns_symptoms() {
         return signs_symptoms;
     }
 
@@ -96,7 +96,7 @@ public class Patient implements Serializable {
     }
 
     public boolean isBreath() {
-        return diffdifficultybreath;
+        return difficultybreath;
     }
 
     public boolean isTachychardia() {
@@ -141,7 +141,11 @@ public class Patient implements Serializable {
     }
 
     public void setPasswordPat(String passwordPat) {
-        this.passwordPat = passwordPat;
+        String chain="";
+        for(int i=passwordPat.length()-1; i>=0; i--){
+            chain = chain + passwordPat.charAt(i);
+        }
+       this.passwordPat = chain;
     }
     
 
@@ -149,7 +153,7 @@ public class Patient implements Serializable {
         return monitoring;
     }
 
-    public String[] getSigns() {
+    public String getSigns() {
         return signs_symptoms;
     }
 
@@ -159,7 +163,11 @@ public class Patient implements Serializable {
         this.databitalino = databitalino;
     }
 
-    public Patient(String namePatient, String surnameP, int agePatient, float weightPatient, float heightPatient, LocalDateTime monitoringData,boolean sevheadache,  boolean fatigue, boolean chestpain, boolean diffdifficultybreath, boolean irregheartbeat, String[] signs_symptoms) {
+    public Patient(){
+    }
+    
+    public Patient(String username, String namePatient, String surnameP, int agePatient, float weightPatient, float heightPatient, LocalDateTime monitoringData,boolean sevheadache,  boolean fatigue, boolean chestpain, boolean difficultybreath, boolean irregheartbeat, String signs_symptoms) {
+        this.username = username;
         this.name = namePatient;
         this.surname = surnameP;
         this.age = agePatient;
@@ -169,20 +177,21 @@ public class Patient implements Serializable {
         this.sevheadache = sevheadache;
         this.fatigue = fatigue;
         this.chestpain=chestpain;
-        this.diffdifficultybreath=diffdifficultybreath;
+        this.difficultybreath=difficultybreath;
         this.irregheartbeat=irregheartbeat;
         this.signs_symptoms = signs_symptoms;
       
     }
 
-    public Patient(float weightPatient, LocalDateTime monitoringData,boolean sevheadache,  boolean fatigue, boolean chestpain, boolean diffdifficultybreath, boolean irregheartbeat,String[] signs_symptoms) {
+    public Patient(String username, float weightPatient, LocalDateTime monitoringData,boolean sevheadache,  boolean fatigue, boolean chestpain, boolean difficultybreath, boolean irregheartbeat,String signs_symptoms) {
       
+        this.username = username;
         this.weight = weightPatient;
         this.monitoring = monitoringData;
         this.sevheadache = sevheadache;
         this.fatigue = fatigue;
         this.chestpain=chestpain;
-        this.diffdifficultybreath=diffdifficultybreath;
+        this.difficultybreath=difficultybreath;
         this.irregheartbeat=irregheartbeat;
         this.signs_symptoms = signs_symptoms;
   
@@ -194,7 +203,7 @@ public class Patient implements Serializable {
 
     @Override
     public String toString() {
-        return (name + " " + surname + "\nAge: " + age + "\nWeight: " + weight + "\nHeight: " + height + "\nMonitoring: " + monitoring + "\nSevere headache: "+ sevheadache+ "\nchestpain: "+ chestpain+ "\nfatigue: "+ fatigue +"\nirregheartbeat: "+ irregheartbeat+"\ndiffdifficultybreath: "+ diffdifficultybreath+"\nAdditional information: " + Arrays.toString(signs_symptoms) );
+        return (name + " " + surname + "\nAge: " + age + "\nWeight: " + weight + "\nHeight: " + height + "\nMonitoring: " + monitoring + "\nSevere headache: "+ sevheadache+ "\nchestpain: "+ chestpain+ "\nfatigue: "+ fatigue +"\nirregheartbeat: "+ irregheartbeat+"\ndifficultybreath: "+ difficultybreath+"\nAdditional information: " + signs_symptoms);
     }
 
     public static boolean RegularExp(String name) {
