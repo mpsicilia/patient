@@ -24,6 +24,8 @@ public class Patient implements Serializable {
     private final String[] signs;
     private final String[] symptoms;
     public int[][] databitalino = new int[2][10000];
+    private String username;
+    private String passwordPat;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -48,6 +50,23 @@ public class Patient implements Serializable {
     public float getHeight() {
         return height;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPasswordPat() {
+        return passwordPat;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPasswordPat(String passwordPat) {
+        this.passwordPat = passwordPat;
+    }
+    
 
     public LocalDateTime getMonitoring() {
         return monitoring;

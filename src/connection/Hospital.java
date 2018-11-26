@@ -137,7 +137,7 @@ public class Hospital {
                     //Cheking if the folder of the patient already exists, if not we create it
                     //Each patient has a folder
                     String current = new java.io.File(".").getCanonicalPath();
-                    Path path = Paths.get(current, patient.getName() + "_" + patient.getSurname());
+                    Path path = Paths.get(current, patient.getUsername());
                     if (!Files.exists(path)) {
                         try {
                             Files.createDirectories(path);
