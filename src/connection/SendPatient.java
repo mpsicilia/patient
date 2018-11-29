@@ -44,7 +44,7 @@ public class SendPatient {
         try {
             System.out.println("Introduce the IP of the hospital: ");
             String ip = bf.readLine();
-            socket = new Socket(ip, 9001);
+            socket = new Socket(ip, 62000);
             outputStream = socket.getOutputStream();
 
         } catch (IOException ex) {
