@@ -240,7 +240,6 @@ public class SendPatient {
         System.out.println("Introduce the MAC of your Bitalino");
         String BitalinoMAC = bf.readLine();
         int[][] bitalinoData = Bitalino(BitalinoMAC);
-        //int[][] bitalinoData = Bitalino("20:16:02:14:75:76");
         //Store the EMG and ECG in the Patient
         patient.setDataBitalino(bitalinoData);
 
