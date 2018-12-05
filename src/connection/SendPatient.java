@@ -270,6 +270,8 @@ public class SendPatient {
             releaseResources(objectOutputStream, socket);
         }
         System.out.println("\tEND OF THE PROGRAM");
+        System.exit(0);
+        
     }
 
     //Function in which we get the data from the bitalino
